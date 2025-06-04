@@ -13,3 +13,5 @@ router.post('/logout', logout);
 export default router;
 
 // starting form the database connection
+
+// // This file defines the routes for authentication-related actions.
