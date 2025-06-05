@@ -12,6 +12,8 @@ const app = express();
 
 const PORT =  process.env.PORT;
 
+app.use(express.json()); // Middleware to parse JSON bodies simply can extract data from the request body
+
 app.use("/api/auth" , authRoutes)
 
 app.listen (PORT, () => { 
