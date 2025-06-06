@@ -2,6 +2,7 @@
 // It sets up an Express server that listens on port 5001
 import express from 'express';
 import dotenv from 'dotenv'; 
+import cookieParser from 'cookie-parser'; // Middleware to parse cookies
 
 import authRoutes from './routes/auth.route.js';
 import { connectDB } from './lib/db.js';
@@ -13,6 +14,7 @@ const app = express();
 const PORT =  process.env.PORT;
 
 app.use(express.json()); // Middleware to parse JSON bodies simply can extract data from the request body
+app.use(cookieParser()); // Middleware to parse cookies from the request headers
 
 app.use("/api/auth" , authRoutes)
 
