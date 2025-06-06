@@ -6,8 +6,10 @@ import cookieParser from 'cookie-parser'; // Middleware to parse cookies
 
 import authRoutes from './routes/auth.route.js';
 import { connectDB } from './lib/db.js';
-// Importing the auth routes from the auth.route.js file
+import messageRoutes from './routes/message.route.js'; // Importing message routes if you have them defined
 
+
+// Importing the auth routes from the auth.route.js file
 dotenv.config(); // Load environment variables from .env file 
 const app = express();
 
@@ -17,6 +19,8 @@ app.use(express.json()); // Middleware to parse JSON bodies simply can extract d
 app.use(cookieParser()); // Middleware to parse cookies from the request headers
 
 app.use("/api/auth" , authRoutes)
+app.use("/api/messages", messageRoutes); // Assuming you have message routes defined
+
 
 app.listen (PORT, () => { 
   console.log('Server is running on port:' + PORT);
