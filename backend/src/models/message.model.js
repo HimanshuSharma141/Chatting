@@ -23,6 +23,6 @@ const messageSchema = new mongoose.Schema(
     {timestamps: true }
  );
 
- const message = mongoose.model("message", userSchema); // y wali line isliye likhi h taki apn isko aage bhi use kar sake 
+ const message = mongoose.model("message", messageSchema); // y wali line isliye likhi h taki apn isko aage bhi use kar sake 
 
  export default message;
