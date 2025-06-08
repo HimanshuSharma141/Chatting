@@ -68,7 +68,7 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       _id: user._id,
-      fullName: user.fullName,
+      fullname: user.fullname, // Always use 'fullname' for consistency
       email: user.email,
       profilePic: user.profilePic,
     });
