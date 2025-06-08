@@ -23,8 +23,8 @@ export const getMessages = async (req, res) => {
 
     const messages = await Message.find({
       $or: [
-        { senderId: myId, receiverId: userToChatId },
-        { senderId: userToChatId, receiverId: myId },
+        { senderId: myId, reciverId: userToChatId },
+        { senderId: userToChatId, reciverId: myId },
       ],
     });
 
@@ -50,7 +50,7 @@ export const sendMessage = async (req, res) => {
 
     const newMessage = new Message({
       senderId,
-      receiverId,
+      reciverId: receiverId, // Fix field name to match model
       text,
       image: imageUrl,
     });
