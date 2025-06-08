@@ -16,12 +16,13 @@ const app = express();
 const PORT =  process.env.PORT;
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Change this to your frontend URL
+  origin: ['http://localhost:5173', 'http://localhost:5174'], // Allow both common dev ports
   credentials: true // Allow credentials (cookies, authorization headers, etc.)
-})); // Middleware to enable CORS for the specified origin  
+})); // Middleware to enable CORS for the specified origins  
 
-app.use(express.json()); // Middleware to parse JSON bodies simply can extract data from the request body
 app.use(cookieParser()); // Middleware to parse cookies from the request headers
+// Increase the payload size limit for JSON bodies to handle large images
+app.use(express.json({ limit: '10mb' })); // Middleware to parse JSON bodies simply can extract data from the request body 
 
 app.use("/api/auth" , authRoutes)
 app.use("/api/messages", messageRoutes); // Assuming you have message routes defined
