@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export const genrateToken = (userId, res) => {
-    const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: userId }, process.env.JWT_SECRET, {
         expiresIn: '7d', // Token will expire in 7 days
     });
 
