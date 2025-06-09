@@ -12,7 +12,9 @@ const ChatContainer = () => {
     messages,
     getMessages,
     isMessagesLoading,
-    selectedUser
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
   } = useChatStore();
   const { authUser } = useUserAuthStore();
   const scrollRef = useRef(null);
@@ -28,13 +30,24 @@ const ChatContainer = () => {
 
   useEffect(() => {
     getMessages(selectedUser._id);
-  }, [selectedUser._id, getMessages]);
+    subscribeToMessages();
+    return () => {
+      unsubscribeFromMessages();
+    };
+    // Only depend on selectedUser._id
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUser._id]);
 
   useEffect(() => {
-    if (scrollRef.current && messages) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    // Only auto-scroll if the user is already near the bottom (not if they're reading old messages)
+    if (scrollRef.current && messages && messages.length > 0) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const isNearBottom = scrollHeight - (scrollTop + clientHeight) < 100;
+      if (isNearBottom) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
     }
-  }, [messages]);
+  }, [messages, selectedUser]);
 
   if (isMessagesLoading) {
     return (

@@ -14,8 +14,11 @@ import { Toaster } from 'react-hot-toast'
 
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth } = useUserAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useUserAuthStore();
   const { theme } = useThemeStore();
+
+  console.log({onlineUsers}); // Log online users to console
+
     useEffect(() => {
     checkAuth();
   }, [checkAuth]);
