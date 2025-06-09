@@ -1,19 +1,27 @@
 import  {create} from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
 
-export const useUserAuthStore = create((set) => ({
+// Remove leading space and use correct backend port for Socket.IO
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001/" : "/"; // Update with your backend URL
+
+export const useUserAuthStore = create((set, get) => ({
     authUser: null,
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
     onlineUsers: [],
     isCheckingAuth: true,
+    Socket: null,
 
     checkAuth: async () => {
       try {
         const res = await axiosInstance.get("/auth/check");
         set({ authUser: res.data });
+
+        get().connectSocket();
+
       } catch (error) {
         set({ authUser: null });
       } finally {
@@ -27,6 +35,9 @@ export const useUserAuthStore = create((set) => ({
         const res = await axiosInstance.post("/auth/signup", data);
         set({ authUser: res.data });
         toast.success("Account created successfully");
+
+        get().connectSocket();
+
       } catch (error) {
         toast.error(error.response?.data?.message || "Signup failed");
       } finally {
@@ -40,6 +51,8 @@ export const useUserAuthStore = create((set) => ({
         const res = await axiosInstance.post("/auth/login", data);
         set({ authUser: res.data });
         toast.success("Logged in successfully");
+
+        get().connectSocket(); // Connect to socket after successful login
       } catch (error) {
         // Show a more descriptive error if available
         toast.error(error.response?.data?.message || error.message || "Login failed");
@@ -53,6 +66,8 @@ export const useUserAuthStore = create((set) => ({
         await axiosInstance.post("/auth/logout");
         set({ authUser: null });
         toast.success("Logged out successfully");
+
+        get().disconnectSocket(); // Disconnect socket on logout
       } catch (error) {
         toast.error(error.response?.data?.message || "Logout failed");
       }
@@ -72,5 +87,25 @@ export const useUserAuthStore = create((set) => ({
     }
   },
 
-  
+
+   connectSocket: () => {
+    const { authUser } = get();
+    if (!authUser || get().Socket?.connected) return;
+
+    // Pass userId as query param for backend to track online users
+    const socket = io(BASE_URL, {
+      query: { userId: authUser._id },
+    });
+
+    // Listen for getOnlineUsers event from backend (backend emits 'getOnlineUsers')
+    socket.on("getOnlineUsers", (users) => {
+      set({ onlineUsers: users });
+    });
+
+    socket.connect();
+    set({ Socket: socket });
+  },
+  disconnectSocket: () => {
+    if (get().Socket?.connected) get().Socket.disconnect();
+  },
 }));
