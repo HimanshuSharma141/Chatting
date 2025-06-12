@@ -1,31 +1,31 @@
-import Navbar from './components/Navbar'
-import HomePage from './Pages/HomePage'
-import SignupPage from './Pages/Signuppage'
-import LoginPage from './Pages/LoginPage'
-import SettingsPage from './Pages/SettingsPage'
-import ProfilePage from './Pages/ProfilePage'
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
 
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import { useUserAuthStore } from './store/userAuthStore'
-import { useThemeStore } from './store/useThemeStore'
-import { Loader } from 'lucide-react'
-import { Toaster } from 'react-hot-toast'
-
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useUserAuthStore } from "./store/userAuthStore";
+import { useThemeStore } from "./store/useThemeStore";
+import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useUserAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } =
+    useUserAuthStore();
   const { theme } = useThemeStore();
 
-  console.log({onlineUsers}); // Log online users to console
+  console.log({ onlineUsers }); // Log online users to console
 
-    useEffect(() => {
+  useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
     if (theme) {
-      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute("data-theme", theme);
     }
   }, [theme]);
 
@@ -36,19 +36,30 @@ const App = () => {
       </div>
     );
   return (
-    <div> 
+    <div>
       <Navbar />
       <Routes>
-        <Route path="/" element={authUser ?  <HomePage /> : <Navigate to='/login' />} />
-        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to='/' />} />
-        <Route path="/login" element={!authUser ? <LoginPage />  : <Navigate to='/' />} />
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/signup"
+          element={!authUser ? <RegisterPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />     
-        </Routes>
-        <Toaster />
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+      </Routes>
+      <Toaster />
+    </div>
+  );
+};
 
-</div>
-  )
-}
-
-export default App
+export default App;
