@@ -1,6 +1,6 @@
 import Navbar from './components/Navbar'
 import HomePage from './Pages/HomePage'
-import SignUpPage from './Pages/SignUpPage'
+import SignupPage from './Pages/signupPage'
 import LoginPage from './Pages/LoginPage'
 import SettingsPage from './Pages/SettingsPage'
 import ProfilePage from './Pages/ProfilePage'
@@ -40,7 +40,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={authUser ?  <HomePage /> : <Navigate to='/login' />} />
-        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
+        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to='/' />} />
         <Route path="/login" element={!authUser ? <LoginPage />  : <Navigate to='/' />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />     
