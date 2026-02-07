@@ -1,28 +1,28 @@
-import { genrateToken } from '../lib/utlis.js';
-import User from '../models/user.model.js';
-import bcrypt from 'bcryptjs';
-import cloudinary from '../lib/cloudinary.js';    
-
+import { genrateToken } from "../lib/utlis.js";
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
-  const {fullname,email,password} = req.body;
+  const { fullname, email, password } = req.body;
   try {
-
     if (!fullname || !email || !password) {
-      return res.status(400).json({message: 'Please fill all the fields'});
+      return res.status(400).json({ message: "Please fill all the fields" });
     }
     if (password.length < 6) {
-      return res.status(400).json({message: 'Password must be at least 6 characters long'});
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters long" });
     }
 
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({message: 'User already exists'});
+      return res.status(400).json({ message: "User already exists" });
     }
-    
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-  
+
     const newUser = new User({
       fullname,
       email,
@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
     });
 
     if (newUser) {
-      genrateToken (newUser._id, res);
+      genrateToken(newUser._id, res);
       await newUser.save();
 
       res.status(201).json({
@@ -40,15 +40,26 @@ export const signup = async (req, res) => {
         profilePic: newUser.profilePic, // Fixed property access
       });
     } else {
-      res.status(400).json({message: 'User not created'});
+      res.status(400).json({ message: "User not created" });
     }
-
   } catch (error) {
-    console.log("Error in signup controller",error.message);
+    console.log("Error in signup controller", error.message);
     res.status(500).json({
-      message: 'Internal server error'});
+      message: "Internal server error",
+    });
   }
-}
+};
+
+import fs from "fs";
+import path from "path";
+
+const log = (msg) => {
+  try {
+    fs.appendFileSync("server.log", `${new Date().toISOString()} - ${msg}\n`);
+  } catch (e) {
+    console.error("Logging failed", e);
+  }
+};
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -56,11 +67,13 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      log(`Login failed: User not found for ${email}`);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
+      log(`Login failed: Invalid password for ${email}`);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -73,6 +86,7 @@ export const login = async (req, res) => {
       profilePic: user.profilePic,
     });
   } catch (error) {
+    log(`Login error: ${error.message}`);
     console.log("Error in login controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -89,7 +103,7 @@ export const logout = (req, res) => {
 };
 
 // This file contains the authentication controller functions for user signup, login, and logout.
-  export const updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
     const userId = req.user._id;
@@ -102,7 +116,7 @@ export const logout = (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json(updatedUser);

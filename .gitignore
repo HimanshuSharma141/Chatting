@@ -1,3 +1,21 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.development
+!.env.example
+
+# Build Outputs
+dist/
+dist-ssr/
+build/
+.vercel/
+
 # Logs
 logs
 *.log
@@ -6,12 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-frontend/node_modules/
-dist
-dist-ssr
-*.local
-backend/node_modules/
 
 # Editor directories and files
 .vscode/*
@@ -24,6 +36,7 @@ backend/node_modules/
 *.sln
 *.sw?
 
-.env
-
-
+# OS Generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
