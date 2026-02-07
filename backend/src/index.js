@@ -11,20 +11,12 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { app, server } from "./lib/socket.js";
-import fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.join(__dirname, "../.env") });
-
-const logFile = path.join(__dirname, "../server.log");
-const log = (msg) =>
-  fs.appendFileSync(logFile, `${new Date().toISOString()} - ${msg}\n`);
-
-log("Starting server...");
-log(`PORT: ${process.env.PORT}`);
-log(`MONGODB_URI: ${process.env.MONGODB_URI ? "Defined" : "Undefined"}`);
-log(`JWT_SECRET: ${process.env.JWT_SECRET ? "Defined" : "Undefined"}`);
+console.log("Starting server...");
+console.log(`PORT: ${process.env.PORT}`);
+console.log(
+  `MONGODB_URI: ${process.env.MONGODB_URI ? "Defined" : "Undefined"}`,
+);
+console.log(`JWT_SECRET: ${process.env.JWT_SECRET ? "Defined" : "Undefined"}`);
 
 const PORT = process.env.PORT || 5001;
 

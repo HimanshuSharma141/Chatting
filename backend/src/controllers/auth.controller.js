@@ -50,30 +50,19 @@ export const signup = async (req, res) => {
   }
 };
 
-import fs from "fs";
-import path from "path";
-
-const log = (msg) => {
-  try {
-    fs.appendFileSync("server.log", `${new Date().toISOString()} - ${msg}\n`);
-  } catch (e) {
-    console.error("Logging failed", e);
-  }
-};
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
-      log(`Login failed: User not found for ${email}`);
+      console.log(`Login failed: User not found for ${email}`);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      log(`Login failed: Invalid password for ${email}`);
+      console.log(`Login failed: Invalid password for ${email}`);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -86,7 +75,7 @@ export const login = async (req, res) => {
       profilePic: user.profilePic,
     });
   } catch (error) {
-    log(`Login error: ${error.message}`);
+    console.log(`Login error: ${error.message}`);
     console.log("Error in login controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
