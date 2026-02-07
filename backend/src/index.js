@@ -22,14 +22,13 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// Only serve static files and catch-all in production
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
   const frontendDist = path.resolve(__dirname, "../frontend/dist");
   app.use(express.static(frontendDist));
   app.get("/*", (req, res) => {
@@ -37,7 +36,19 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT, () => {
-  console.log("server is running on PORT:" + PORT);
-  connectDB();
-});
+const startServer = () => {
+  server.listen(PORT, () => {
+    console.log("server is running on PORT:" + PORT);
+    connectDB();
+  });
+};
+
+if (
+  process.argv[1] === process.cwd() + "/src/index.js" ||
+  process.argv[1].endsWith("index.js")
+) {
+  // Simple heuristic for now, or just check simple env var
+  startServer();
+}
+
+export { app, server, connectDB };
